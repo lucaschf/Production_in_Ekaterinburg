@@ -46,31 +46,25 @@ int main(int argc, char *argv[]) {
     int time;
     int i;
 
-    while (fscanf(input, "%d", &numberOfTasks) != EOF) {
-        if (numberOfTasks <= 0) {
-            break;
+    while (fscanf(input, "%d", &numberOfTasks) != EOF && numberOfTasks > 0) {
+        time = 0;
+        Task tasks[numberOfTasks];
+
+        for (i = 0; i < numberOfTasks; i++) {
+            fscanf(input, "%d %d", &tasks[i].startTime, &tasks[i].processingTime);
         }
 
-        while (numberOfTasks != 0) {
-            time = 0;
-            Task tasks[numberOfTasks];
+        qsort(tasks, numberOfTasks, sizeof(Task), comparator);
 
-            for (i = 0; i < numberOfTasks; i++) {
-                fscanf(input, "%d %d", &tasks[i].startTime, &tasks[i].processingTime);
+        for (i = 0; i < numberOfTasks; i++)
+            if (time >= tasks[i].startTime) {
+                time += tasks[i].processingTime;
+            } else {
+                time = tasks[i].startTime + tasks[i].processingTime;
             }
 
-            qsort(tasks, numberOfTasks, sizeof(Task), comparator);
-
-            for (i = 0; i < numberOfTasks; i++)
-                if (time >= tasks[i].startTime) {
-                    time += tasks[i].processingTime;
-                } else {
-                    time = tasks[i].startTime + tasks[i].processingTime;
-                }
-
-            fprintf(output, "%d\n", time);
-            numberOfTasks = 0;
-        }
+        fprintf(output, "%d\n", time);
+        numberOfTasks = 0;
     }
 
     return 0;
